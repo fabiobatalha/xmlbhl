@@ -42,14 +42,19 @@ class IndexHandler(tornado.web.RequestHandler):
         if 'isofile' in self.request.files:
             isofile = self.request.files['isofile'][0]
             original_fname = isofile['filename']
-            try:
-                output_file = open("uploads/" + original_fname, 'wb')
-                output_file.write(isofile['body'])
-                data['status'] = 'alert-success'
-                data['message'] = "file %s is uploaded" % original_fname
-            except IOError:
+            extension = original_fname.split('.')[-1]
+            if isofile['content_type'] != u'application/octet-stream' and not extension in ['iso', 'part']:
                 data['status'] = 'alert-danger'
-                data['message'] = "IOError trying to record: %s" % original_fname
+                data['message'] = "file %s with content-type or extension not allowed. Please, upload files with valid extension (.iso, .part)." % original_fname
+            else:
+                try:
+                    output_file = open("uploads/" + original_fname, 'wb')
+                    output_file.write(isofile['body'])
+                    data['status'] = 'alert-success'
+                    data['message'] = "file %s is uploaded" % original_fname
+                except IOError:
+                    data['status'] = 'alert-danger'
+                    data['message'] = "IOError trying to record: %s" % original_fname
         else:
             data['status'] = 'alert-danger'
             data['message'] = "You must select a valid file"
