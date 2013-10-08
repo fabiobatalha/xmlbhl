@@ -1,28 +1,50 @@
 <html>
-    <head>
-        <title>XML's for BHL</title>
-        <link rel="stylesheet" type="text/css" href="/static/css/bootstrap.css"/>
-    </head>
-    <body>
-        <div style="text-align: center;">
-            <img src="/static/images/scielo_logo.png"/>
-            <h3>Ferramenta para geração de XML's de metadados de obras digitalizadas</h3>
-            <form action="/" 
-                  method="post"
-                  class="form-inline"
-                  role="form"
-                  enctype="multipart/form-data">
-                <div class="form-group">
-                    <input type="file" id="isofile" name="isofile">
-                </div>
-                <div class="form-group">
-                    <button type="submit" class="btn btn-primary btn-lg">upload file</button>
-                </div>
-            </form>
-            {% if data['status'] %}
-                <div class="alert {{ data['status'] }}">{{ data['message'] }}</div>
-            {% end %}
+  <head>
+    <title>XML's for BHL</title>
+    <link rel="stylesheet" type="text/css" href="/static/css/bootstrap.css"/>
+  </head>
+  <body>
+    <div style="text-align: center;">
+      <img src="/static/images/scielo_logo.png"/>
+      <h3>Ferramenta para geração de XML's de metadados de obras digitalizadas</h3>
+      <form action="/" 
+            method="post"
+            class="form-inline"
+            role="form"
+            enctype="multipart/form-data">
+        <div class="form-group">
+          <input type="file" id="isofile" name="isofile">
         </div>
-    </body>
-    <script src="/static/js/bootstrap.js"></script>
+        <div class="form-group">
+          <button type="submit" class="btn btn-primary btn-lg">upload file</button>
+        </div>
+      </form>
+      {% if data['status'] %}
+        <div class="alert {{ data['status'] }}">{{ data['message'] }}</div>
+      {% end %}
+      <div class="span12">
+        <table class="table table-striped">
+          <tr>
+            <th>uploaded at</th>
+            <th>file name</th>
+            <th>source</th>
+            <th>actions</th>
+          </tr>
+          {% for file in data['uploaded_files'] %}
+              <tr>
+                <th>{{ file.uploaded_at }}</th>
+                <th>{{ file.filename }}</th>
+                <th>{{ file.source }}</th>
+                <th>
+                  <a href="/ajx/json/{{ file.id }}" class="btn btn-primary btn-sm">json</a>
+                  <a href="/ajx/xml/{{ file.id }}" class="btn btn-primary btn-sm">xml</a>
+                  <a href="/d/{{ file.id }}" class="btn btn-danger btn-sm">remove</a>
+                </th>
+              </tr>
+          {% end %}
+        </table>
+      </div>
+    </div>
+  </body>
+  <script src="/static/js/bootstrap.js"></script>
 </html>
